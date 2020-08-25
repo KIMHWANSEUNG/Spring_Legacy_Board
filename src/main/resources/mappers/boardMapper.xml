@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.legacystudy.dao.BoardMapper">
+	 <select id="countBoard" resultType="int">
+		SELECT COUNT(*) FROM K_board
+	 </select>
+	 <select id="selectListboard" resultType="BoardVO">
+ 		SELECT 
+	 		board_number, 
+	 		board_date, 
+	 		board_title, 
+	 		board_content, 
+	 		name 
+ 		FROM 
+ 			K_board 
+ 		inner
+ 		join 
+ 			user 
+ 		ON
+ 		 K_board.user_idx = user.idx
+ 		WHERE board_number
+ 		 order by 1 asc
+ 		 Limit #{start}, #{end} 
+ 	</select>
+ 	<insert id="insertBoard">
+		insert into k_board(board_number,board_title,board_content,user_idx)
+		values(#{board_number}, #{board_title}, #{board_content}, #{user_idx})
+	</insert>
+	<select id="showBoard" resultType="BoardVO">
+	 	SELECT 
+	 		board_number, 
+	 		board_date, 
+	 		board_title, 
+	 		board_content, 
+	 		name 
+ 		FROM 
+ 			K_board 
+ 		inner
+ 		join 
+ 			user 
+ 		ON
+ 		 K_board.user_idx = user.idx
+ 		where
+ 		 board_number=#{board_number};
+	</select>
+	<select id="showComent" resultType="ComentVO">
+		SELECT
+		 	cm.coment_number,
+            us.name,
+            cm.coment,
+            cm.coment_date,
+            cm.coment_state,
+            cm.c_board_number,
+            cm.user_idx
+		FROM  coment cm inner join k_board kb on cm.c_board_number=kb.board_number 
+				inner join user us on us.idx = cm.user_idx
+		where 
+			c_board_number=#{board_number};
+	</select>
+	<insert id="insertComent">
+		insert into coment(user_idx,coment,coment_state,c_board_number)
+		values(#{user_idx}, #{coment}, #{coment_state},#{c_board_number})
+	</insert>
+	
+</mapper>
